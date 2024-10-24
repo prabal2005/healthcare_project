@@ -13,6 +13,8 @@ const port= process.env.PORT || 5000;
 app.set('view engine', 'hbs');
 app.use(express.json());
 app.use(cors());
+
+app.use("/api/register",require("./routes/userRoutes"));
 //error handling middleware
 app.use(errorHandler);
 
