@@ -6,6 +6,7 @@ const hbs = require("hbs");
 const path = require("path");
 const dotenv = require("dotenv")
 const multer = require("multer")
+const fs= require("fs");
 
 dotenv.config();
 
@@ -87,6 +88,27 @@ app.post("/profile", upload.single("avatar"), function(req, res, next) {
         imageUrl: imageUrl 
     });
 });
+app.get('/gallery', (req, res) => {
+    const imageFolderPath = path.join(__dirname, 'uploads');
+    
+    // Read files from the uploads folder
+    fs.readdir(imageFolderPath, (err, files) => {
+        if (err) {
+            console.error("Error reading files:", err);
+            res.status(500).send("Error retrieving images");
+            return;
+        }
+        
+        // Filter for only image files
+        const images = files.map(file => `/uploads/${file}`);
+        
+        // Render the gallery view with the images array
+        res.render('gallery', { images });
+    });
+});
+
+// Make the uploads folder static so images can be accessed by the browser
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 // Server Listening
